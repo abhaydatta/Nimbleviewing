@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Nimbleviewing</string>
+    <string name="action_settings">Settings</string>
+    <string name="large_text">Your mission, should you choose to accept it, is to show album titles and images in a Recycler view. The album title and image should be retrieved from https://jsonplaceholder.typicode.com/. The project already contains a base URL (the one above!) and endpoint URLs for this task.</string>
+</resources>
