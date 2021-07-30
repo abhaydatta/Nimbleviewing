@@ -6,25 +6,24 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.wwt.nimbleviewing.R
 import com.wwt.nimbleviewing.data.model.Album
+import com.wwt.nimbleviewing.databinding.ListItemAlbumBinding
 import kotlinx.android.synthetic.main.list_item_album.view.*
 
-class AlbumAdapter(
-    private val albums: ArrayList<Album>
-): RecyclerView.Adapter<AlbumAdapter.DataViewHolder>() {
+class AlbumAdapter : RecyclerView.Adapter<AlbumAdapter.DataViewHolder>() {
+    private val albums: MutableList<Album> = mutableListOf()
 
-    class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class DataViewHolder(private val binding: ListItemAlbumBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(album: Album) {
-            itemView.albumTitle.text = album.title
-           /* Glide.with(itemView.imageViewAvatar.context)
-                .load(user.avatar)
-                .into(itemView.imageViewAvatar)*/
+            binding.albumTitle.text = album.title
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         DataViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_album, parent,
+            ListItemAlbumBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
                 false
             )
         )
@@ -35,6 +34,8 @@ class AlbumAdapter(
         holder.bind(albums[position])
 
     fun addData(list: List<Album>) {
+        albums.clear()
         albums.addAll(list)
+        notifyDataSetChanged()
     }
 }

@@ -11,14 +11,14 @@ android {
 
     defaultConfig {
         applicationId "com.wwt.nimbleviewing"
-        minSdkVersion 25
+        minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "BASE_URL", "\"https://jsonplaceholder.typicode.com/\"")
+        buildConfigField("String", "BASE_URL", "\"aHR0cHM6Ly9qc29ucGxhY2Vob2xkZXIudHlwaWNvZGUuY29tLw==\"")
         buildConfigField("String", "ALBUM_ENDPOINT_URL", "\"https://jsonplaceholder.typicode.com/albums\"")
         buildConfigField("String", "ALBUM_ART_ENDPOINT_URL", "\"https://jsonplaceholder.typicode.com/photos\"")
     }

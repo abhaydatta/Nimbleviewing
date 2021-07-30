@@ -6,16 +6,18 @@ import com.wwt.nimbleviewing.data.api.ApiHelper
 import com.wwt.nimbleviewing.data.api.ApiHelperImpl
 import com.wwt.nimbleviewing.data.api.ApiService
 import com.wwt.nimbleviewing.data.util.NetworkHelper
+import com.wwt.nimbleviewing.data.util.getUrl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 
 val appModule = module {
     single { provideOkHttpClient() }
-    single { provideRetrofit(get(), BuildConfig.BASE_URL) }
+    single { provideRetrofit(get()) }
     single { provideApiService(get()) }
     single { provideNetworkHelper(androidContext()) }
 
@@ -31,6 +33,8 @@ private fun provideOkHttpClient() = if (BuildConfig.DEBUG) {
     loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
     OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
+        . readTimeout(2000L,TimeUnit.MILLISECONDS)
+        .connectTimeout(2000L,TimeUnit.MILLISECONDS)
         .build()
 } else OkHttpClient
     .Builder()
@@ -38,11 +42,10 @@ private fun provideOkHttpClient() = if (BuildConfig.DEBUG) {
 
 private fun provideRetrofit(
     okHttpClient: OkHttpClient,
-    BASE_URL: String
 ): Retrofit =
     Retrofit.Builder()
         .addConverterFactory(MoshiConverterFactory.create())
-        .baseUrl(BASE_URL)
+        .baseUrl(BuildConfig.BASE_URL.getUrl())
         .client(okHttpClient)
         .build()
 

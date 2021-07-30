@@ -9,7 +9,7 @@ import retrofit2.http.GET
 interface ApiService {
 
     @GET("albums")
-    suspend fun getAlbum(): Response<List<Album>>
+    suspend fun getAlbum(): List<Album>?
 
     @GET("photos")
     suspend fun getAlbumPhoto(): Response<List<AlbumArt>>

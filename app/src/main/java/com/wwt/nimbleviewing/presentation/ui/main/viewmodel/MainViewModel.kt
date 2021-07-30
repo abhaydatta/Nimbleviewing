@@ -1,41 +1,45 @@
 package com.wwt.nimbleviewing.presentation.ui.main.viewmodel
 
 import androidx.lifecycle.*
+import com.wwt.nimbleviewing.core.NimbleViewModel
+import com.wwt.nimbleviewing.core.models.NBError
 import com.wwt.nimbleviewing.data.model.Album
+import com.wwt.nimbleviewing.data.util.DataState
 
 import com.wwt.nimbleviewing.domain.repository.MainRepository
-import com.wwt.nimbleviewing.data.util.NetworkHelper
-import com.wwt.nimbleviewing.data.util.Resource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 class MainViewModel(
-    private val mainRepository: MainRepository,
-    private val networkHelper: NetworkHelper
-): ViewModel() {
+    private val mainRepository: MainRepository
+) : NimbleViewModel() {
+    private val albumList = MutableLiveData<DataState<List<Album>>>()
 
-     val albumList = MutableLiveData<Resource<List<Album>>>()
-     val album: LiveData<Resource<List<Album>>>
-        get() = albumList
-
-    init {
-        fetchAlbumList()
+    fun fetchAlbumList(isNetworkConnected: Boolean) {
+        if (isNetworkConnected)
+            callAlbumList()
+        else
+            handleError(NBError(customMessage = "No internet connection!!"))
     }
 
-
-    private fun fetchAlbumList() {
-        viewModelScope.launch {
-            albumList.postValue(Resource.loading(null))
-            if (networkHelper.isNetworkConnected()){
-                val album =  mainRepository.getAlbums()
-                if (album.isSuccessful){
-                    albumList.postValue(Resource.success(album.body()))
-                }else{
-                    albumList.postValue(Resource.error(album.errorBody().toString(),null))
+    private fun callAlbumList() {
+        viewModelScope.launch(Dispatchers.IO) {
+            albumList.postValue(DataState.Loading)
+            try {
+                mainRepository.getAlbums().collectLatest { response ->
+                    response?.let {
+                        albumList.postValue(DataState.Success(it))
+                    } ?: albumList.postValue(DataState.NullResponse)
                 }
-            }else{
-                albumList.postValue(Resource.error("No Internet Connection",null))
+            } catch (e: Exception) {
+                handleError(NBError(e))
             }
         }
     }
+
+    val album: LiveData<DataState<List<Album>>>
+        get() = albumList
 }
