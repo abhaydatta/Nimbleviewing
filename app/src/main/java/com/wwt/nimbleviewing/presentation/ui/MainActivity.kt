@@ -1,6 +1,7 @@
 package com.wwt.nimbleviewing.presentation.ui
 
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +14,6 @@ import com.wwt.nimbleviewing.presentation.ui.main.viewmodel.MainViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class MainActivity : NimbleActivity<ActivityScrollingBinding, MainViewModel>() {
-
     override fun initViewModel(): MainViewModel {
         val viewModel by viewModel<MainViewModel>()
         return viewModel
@@ -32,12 +32,6 @@ class MainActivity : NimbleActivity<ActivityScrollingBinding, MainViewModel>() {
     private fun setAlbumList() {
         binding.rvAlbumList.apply {
             listAdapter = AlbumAdapter()
-            addItemDecoration(
-                DividerItemDecoration(
-                    context,
-                    RecyclerView.VERTICAL
-                )
-            )
             adapter = listAdapter
         }
     }
@@ -50,20 +44,19 @@ class MainActivity : NimbleActivity<ActivityScrollingBinding, MainViewModel>() {
     private val albumObserver = Observer<DataState<List<Album>>> {
         when (it) {
             is DataState.Success -> {
-                // progressBar.visibility = View.GONE
+                binding.progressBar.visibility = View.GONE
                 renderList(it.data)
-                // scrollingView.visibility = View.VISIBLE
             }
             is DataState.Loading -> {
-                // progressBar.visibility = View.VISIBLE
-                // scrollingView.visibility = View.GONE
+                binding.progressBar.visibility = View.VISIBLE
             }
             is DataState.Error -> {
-
+                binding.progressBar.visibility = View.GONE
             }
             else -> {
-
+                binding.progressBar.visibility = View.GONE
             }
+
         }
     }
 
