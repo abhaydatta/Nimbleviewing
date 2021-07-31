@@ -36,6 +36,7 @@ buildscript {
         testExtJunit = '1.1.0'
         uiAutomatorVersion = '2.2.0'
         viewPagerVersion = '1.0.0'
+        roomVersion = '2.2.6'
 
     }
 

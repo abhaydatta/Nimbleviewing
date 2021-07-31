@@ -20,16 +20,15 @@ class MainViewModel(
 
     fun fetchAlbumList(isNetworkConnected: Boolean) {
         if (isNetworkConnected)
-            callAlbumList()
-        else
             handleError(NBError(customMessage = "No internet connection!!"))
+        callAlbumList(isNetworkConnected)
     }
 
-    private fun callAlbumList() {
+    private fun callAlbumList(isNetworkConnected: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             albumList.postValue(DataState.Loading)
             try {
-                mainRepository.getAlbums().collectLatest { response ->
+                mainRepository.getAlbums(isNetworkConnected).collectLatest { response ->
                     response?.let {
                         albumList.postValue(DataState.Success(it))
                     } ?: albumList.postValue(DataState.NullResponse)

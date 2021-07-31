@@ -44,23 +44,29 @@ class MainActivity : NimbleActivity<ActivityScrollingBinding, MainViewModel>() {
 
     private fun setUpObserver() {
         viewModel.fetchAlbumList(networkHelper.isNetworkConnected())
-        viewModel.album.observe(this, Observer {
-            when (it) {
-                is DataState.Success -> {
-                    // progressBar.visibility = View.GONE
-                    renderList(it.data)
-                    // scrollingView.visibility = View.VISIBLE
-                }
-                is DataState.Loading -> {
-                    // progressBar.visibility = View.VISIBLE
-                    // scrollingView.visibility = View.GONE
-                }
-                else -> {
-
-                }
-            }
-        })
+        viewModel.album.observe(this,albumObserver)
     }
+
+    private val albumObserver = Observer<DataState<List<Album>>> {
+        when (it) {
+            is DataState.Success -> {
+                // progressBar.visibility = View.GONE
+                renderList(it.data)
+                // scrollingView.visibility = View.VISIBLE
+            }
+            is DataState.Loading -> {
+                // progressBar.visibility = View.VISIBLE
+                // scrollingView.visibility = View.GONE
+            }
+            is DataState.Error -> {
+
+            }
+            else -> {
+
+            }
+        }
+    }
+
 
     private fun renderList(users: List<Album>) {
         listAdapter.addData(users)
